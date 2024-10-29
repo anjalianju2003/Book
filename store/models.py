@@ -19,6 +19,7 @@ class Book(models.Model):
     )
 
     genre_type=models.CharField(max_length=200,choices=genre_options,default="love")
+    picture=models.ImageField(upload_to="book_images",null=True)
 
     def __str__(self):
         return self.name

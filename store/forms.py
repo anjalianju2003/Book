@@ -12,6 +12,16 @@ class BookForm(forms.Form):
 
     genre_type=forms.ChoiceField(choices=Book.genre_options)
 
+    picture=forms.ImageField()
+
+class BookUpdateForm(forms.ModelForm):
+
+    class Meta:
+
+        model=Book
+
+        fields="__all__"
+
      
 
 

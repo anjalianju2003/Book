@@ -1,10 +1,10 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import render,redirect,get_object_or_404
 
 # Create your views here.
 
 from django.views.generic import View
 
-from store.forms import BookForm
+from store.forms import BookForm,BookUpdateForm
 
 from store.models import Book
 
@@ -26,7 +26,7 @@ class BookView(View):
 
         form_data=request.POST
 
-        form_instance=self.form_class(form_data)
+        form_instance=self.form_class(form_data,files=request.FILES)
 
         if form_instance.is_valid():
             
@@ -91,7 +91,7 @@ class BookUpdateView(View):
 
     template_name="book_update.html"
 
-    form_class=BookForm
+    form_class=BookUpdateForm
 
     def get(self,request,*args,**kwargs):
 
@@ -99,14 +99,14 @@ class BookUpdateView(View):
 
         book_object=Book.objects.get(id=id)
 
-        data={
-            "name":book_object.name,
-            "author":book_object.author,
-            "price":book_object.price,
-            "genre_type":book_object.genre_type
-        }
+        # data={
+        #     "name":book_object.name,
+        #     "author":book_object.author,
+        #     "price":book_object.price,
+        #     "genre_type":book_object.genre_type
+        # }
 
-        form_instance=self.form_class(initial=data)
+        form_instance=self.form_class(instance=book_object)
 
         return render(request,self.template_name,{"form":form_instance})
     
@@ -115,16 +115,24 @@ class BookUpdateView(View):
 
         id=kwargs.get("pk")
 
+        book_object=get_object_or_404(Book,id=id)
+
         form_data=request.POST
 
-        from_instance=self.form_class(form_data)
+        form_instance=self.form_class(form_data,files=request.FILES,instance=book_object)
 
-        if from_instance.is_valid():
+        if form_instance.is_valid():
 
-            data=from_instance.cleaned_data
-
-            Book.objects.filter(id=id).update(**data)
+            form_instance.save()
 
             return redirect("book-list")
+        
+        return render(request,self.template_name,{"form":form_instance})
 
-        return render(request,self.template_name,{"form":from_instance})   
+
+
+
+      
+
+
+  

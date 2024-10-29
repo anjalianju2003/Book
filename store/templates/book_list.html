@@ -18,7 +18,9 @@
       {%for b in data%}
       <div class="col-3 me-3">
           <div class="card" style="width: 100%;">
-              <img src="..." class="card-img-top" alt="...">
+            {%if b.picture%}
+            <img src="{{b.picture.url}}"alt="">
+            {%endif%}
               <div class="card-body">
                 <h5 class="card-title">name:{{b.name}}</h5>
                 <p class="card-text">{{b.author}}</p>
